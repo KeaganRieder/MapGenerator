@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MapGenerator
 {
-    public const int CHUNK_SIZE = 32;
     public MapData data;
     public float lacunarity;
     public int octaves = 10;
@@ -25,16 +24,7 @@ public class MapGenerator
         {
             for (int y = 0; y < data.mapHeight; y++)
             {
-                if (elevationMap[x,y] < data.waterLevel)
-                {
-                    elevationMap[x, y] = 0;
-                }
-                if (elevationMap[x, y] > data.mountainBase)
-                {
-                    elevationMap[x, y] = 1;
-                }
                 CreateTile(x, y, elevationMap[x, y], elevationMap[x, y], elevationMap[x, y], .5f);
-                
             }
         }
        
@@ -50,6 +40,16 @@ public class MapGenerator
       
         tile.transform.SetParent(gameWorld.transform, false);
         tile.transform.position = new Vector3(x, y, 0);
+    }
+
+    public void CreateChunk(int globalX, int globalY)
+    {
+        int chunkX = Mathf.FloorToInt((float)globalX / Chunk.CHUNK_SIZE);
+        int chunkY = Mathf.FloorToInt((float)globalY / Chunk.CHUNK_SIZE);
+
+        GameObject chunk = new GameObject("Chunk");
+        chunk.transform.SetParent(gameWorld.transform, false);
+        // chunk.transform.position = new Vector3(x, y, 0);
     }
 
 }
