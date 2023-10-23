@@ -10,22 +10,32 @@ using UnityEngine;
  */
 public class Chunk
 {
-    public const int CHUNK_SIZE = 32;
     private GameObject chunkObject;
-    private Dictionary<Vector2,Tile> chunkContents = new Dictionary<Vector2, Tile>();
+    private Dictionary<Vector2, Tile> chunkContents = new Dictionary<Vector2, Tile>();
     private Vector2 postion;
-    public Chunk(Vector2 cord, Transform parent)
+    private Bounds bounds;
+
+    //Chunk Creation
+    public Chunk(Vector2 cord, Transform parent, Sprite sprite)
     {
         chunkObject = new GameObject($"Chunk{cord}");
-        postion = cord * CHUNK_SIZE;
+        postion = cord * MapData.CHUNK_SIZE;
         chunkObject.transform.SetParent(parent, false);
         chunkObject.transform.position = postion;
+        bounds = new Bounds(postion, Vector2.one * MapData.CHUNK_SIZE);
+        chunkObject.AddComponent<SpriteRenderer>();
+        chunkObject.GetComponent<SpriteRenderer>().sprite = sprite;
+
+        SetVisible(false);
     }
+    //public vo
     public GameObject GetChunkObject()
     {
         return chunkObject;
     }
     
+
+    //stuff to update things in the chunk
     public void SetFloor(int x, int y, Tile data)
     {
         chunkContents.Add(new Vector2(x, y), data);
@@ -33,6 +43,22 @@ public class Chunk
     public Tile GetFloor(int x, int y)
     {        
         return chunkContents[new Vector2(x,y)];
+    }
+
+    //Chunk Rendering
+    public void UpdateChunk(Vector2 veiwerPostion)
+    {
+        float veiwerDistance = Mathf.Sqrt(bounds.SqrDistance(veiwerPostion));
+        bool visible = veiwerDistance <= MapData.MAX_VIEW_DIST;
+        SetVisible(visible);
+    }
+    public bool IsVisible()
+    {
+        return chunkObject.activeSelf;
+    }
+    public void SetVisible(bool visible)
+    {
+        chunkObject.SetActive(visible);
     }
 
 }

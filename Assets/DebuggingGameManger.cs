@@ -5,8 +5,9 @@ using UnityEngine;
 /* about
  * the games manger
  * controls various aspects of the game
+ * this version is also meant for testing and debuging
  */
-public class GameManger : MonoBehaviour
+public class DebuggingGameManger : MonoBehaviour
 {
     public MapData data;
     public int octaves = 10;
@@ -18,7 +19,8 @@ public class GameManger : MonoBehaviour
     public Sprite sprite;
 
     private MapGenerator mapGenerator = new MapGenerator();
-
+    public ChunkHandler chunkHandler;
+    public Transform Player;
 
     private void Start()
     {
@@ -29,7 +31,10 @@ public class GameManger : MonoBehaviour
         mapGenerator.offset = offset;
         mapGenerator.sprite = sprite;
         mapGenerator.Initalize();
-        mapGenerator.GenerateMap();
+        //chunkHandler = new(mapGenerator);
+        chunkHandler=mapGenerator.chunkHandler;
+        chunkHandler.sprite = sprite;
+       // mapGenerator.GenerateMap();
     }
 
     private void Update()
@@ -54,5 +59,7 @@ public class GameManger : MonoBehaviour
 
 
         }
+        Vector2 veiwerPosition = new Vector2(Player.position.x, Player.position.y);
+        chunkHandler.UpdateVisableChunks(veiwerPosition);
     }
 }

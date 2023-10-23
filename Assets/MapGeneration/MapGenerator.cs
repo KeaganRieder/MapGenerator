@@ -18,8 +18,8 @@ public class MapGenerator
     public Sprite sprite;
 
 
-    private ChunkHandler chunkHandler;
-    private GameObject gameWorld;
+    public ChunkHandler chunkHandler;
+    public GameObject gameWorld;
     //private Tile[,] gameTiles;
     public void Initalize()
     {
@@ -28,6 +28,7 @@ public class MapGenerator
         chunkHandler = new ChunkHandler(gameWorld.transform);
     }
 
+    //need to figure out how to generate chunks
     public void GenerateMap()
     {
         float[,] elevationMap = PerlinNoiseMap.Generate(data.mapWidth, data.mapHeight, data.seed, noiseScale, octaves, data.avgElevation, lacunarity, offset);
@@ -42,5 +43,6 @@ public class MapGenerator
         }
        
     }
+
 
 }

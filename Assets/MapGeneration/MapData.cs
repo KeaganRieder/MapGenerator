@@ -24,7 +24,9 @@ public class MapData
     public float waterLevel;
 
     //spawn info
-        //todo
+    //todo
 
     //other info
+    public const float MAX_VIEW_DIST = 64;
+    public const int CHUNK_SIZE = 32;
 }
