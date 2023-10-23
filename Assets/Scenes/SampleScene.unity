@@ -252,8 +252,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data:
-    mapWidth: 100
-    mapHeight: 100
+    mapWidth: 25
+    mapHeight: 25
     seed: 0
     avgElevation: 0.5
     avgMoisture: 0.7
@@ -264,6 +264,6 @@ MonoBehaviour:
   noiseScale: 27.6
   lacunarity: 1.87
   offset: {x: 0, y: 0}
-  autoUpdate: 0
+  update: 0
   finalizeGeneration: 0
   sprite: {fileID: 7482667652216324306, guid: 971ae92ce783e7c4ab2fcd839742aa9e, type: 3}

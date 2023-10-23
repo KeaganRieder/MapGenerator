@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* about
+ * the games manger
+ * controls various aspects of the game
+ */
 public class GameManger : MonoBehaviour
 {
     public MapData data;
@@ -9,7 +13,7 @@ public class GameManger : MonoBehaviour
     public float noiseScale = 50;
     public float lacunarity;
     public Vector2 offset;
-    public bool autoUpdate = false;
+    public bool update = false;
     public bool finalizeGeneration = false;
     public Sprite sprite;
 
@@ -23,18 +27,19 @@ public class GameManger : MonoBehaviour
         mapGenerator.octaves = octaves;
         mapGenerator.noiseScale = noiseScale;
         mapGenerator.offset = offset;
-        mapGenerator.sprite = sprite;       
+        mapGenerator.sprite = sprite;
+        mapGenerator.Initalize();
         mapGenerator.GenerateMap();
     }
 
     private void Update()
     {
-        if (autoUpdate)
+        if (update)
         {
             if (GameObject.Find("GameWorld") != null)
             {
                 Destroy(GameObject.Find("GameWorld"));
-                Destroy(GameObject.Find("MoistureMap"));
+               // Destroy(GameObject.Find("MoistureMap"));
             }           
            
             mapGenerator.data = data;
@@ -43,8 +48,9 @@ public class GameManger : MonoBehaviour
             mapGenerator.noiseScale = noiseScale;
             mapGenerator.offset = offset;
             mapGenerator.sprite = sprite;
+            mapGenerator.Initalize();
             mapGenerator.GenerateMap();
-            //autoUpdate = false;
+           // update = false;
 
 
         }

@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* about
+ * generate the map for the game
+ * this includes the preview map, and then final map
+ * after settings have been finalized
+ * along with generating new chunks
+ */
 public class MapGenerator
 {
     public MapData data;
@@ -11,45 +17,30 @@ public class MapGenerator
     public Vector2 offset = new();
     public Sprite sprite;
 
-    private GameObject gameWorld;
 
-    public void GenerateMap()
+    private ChunkHandler chunkHandler;
+    private GameObject gameWorld;
+    //private Tile[,] gameTiles;
+    public void Initalize()
     {
         gameWorld = new GameObject("GameWorld");
         gameWorld.transform.position = new Vector3(0, 0, 0);
+        chunkHandler = new ChunkHandler(gameWorld.transform);
+    }
+
+    public void GenerateMap()
+    {
         float[,] elevationMap = PerlinNoiseMap.Generate(data.mapWidth, data.mapHeight, data.seed, noiseScale, octaves, data.avgElevation, lacunarity, offset);
-        float[,] moistureMap = PerlinNoiseMap.Generate(data.mapWidth, data.mapHeight, data.seed, noiseScale, octaves, data.avgMoisture, lacunarity, offset);
-        //terrain
+        //Debug.Log("Generating");
         for (int x = 0; x < data.mapWidth; x++)
         {
             for (int y = 0; y < data.mapHeight; y++)
             {
-                CreateTile(x, y, elevationMap[x, y], elevationMap[x, y], elevationMap[x, y], .5f);
+                Color color = new Color(elevationMap[x, y], elevationMap[x, y], elevationMap[x, y]);
+                chunkHandler.SetTile(x, y,sprite,color);
             }
         }
        
-    }
-
-    public void CreateTile(int x, int y, float r, float g, float b,float a)
-    {
-        GameObject tile = new GameObject("tile");
-        tile.AddComponent<SpriteRenderer>();
-        //tile.AddComponent<TileData<tempClass>>();
-        tile.GetComponent<SpriteRenderer>().sprite = sprite;// graphic.ConvertToSprite();
-        tile.GetComponent<SpriteRenderer>().color = new Color(r, g, b, a);
-      
-        tile.transform.SetParent(gameWorld.transform, false);
-        tile.transform.position = new Vector3(x, y, 0);
-    }
-
-    public void CreateChunk(int globalX, int globalY)
-    {
-        int chunkX = Mathf.FloorToInt((float)globalX / Chunk.CHUNK_SIZE);
-        int chunkY = Mathf.FloorToInt((float)globalY / Chunk.CHUNK_SIZE);
-
-        GameObject chunk = new GameObject("Chunk");
-        chunk.transform.SetParent(gameWorld.transform, false);
-        // chunk.transform.position = new Vector3(x, y, 0);
     }
 
 }
