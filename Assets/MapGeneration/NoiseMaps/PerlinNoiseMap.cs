@@ -6,11 +6,18 @@ using UnityEngine;
  * contains a function to generate a perlin noise map and return it
  * as a float[,]
  */
-public static class PerlinNoiseMap 
+public class PerlinNoiseMap : NoiseMap
 {
-    public static float[,] Generate(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset)
+	public PerlinNoiseMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset)
     {
-        float[,] noiseMap = new float[mapWidth, mapHeight];
+		this.mapWidth = mapWidth;
+		this.mapHeight = mapHeight;
+		Generate(seed, scale, octaves, persistance, lacunarity, offset);
+	}
+
+	public void Generate(int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset)
+    {
+		noiseMap = new float[mapWidth, mapHeight];
 
         //making map octaves have a different seed to allow for better 
         //layering of terrain
@@ -79,6 +86,32 @@ public static class PerlinNoiseMap
 		}
 
 
+		//return noiseMap;
+    }
+}
+
+/* about NoiseMap
+ * contains a functions that handling manipulating noise maps
+ */
+public class NoiseMap
+{
+	protected float[,] noiseMap;
+	protected int mapWidth;
+	protected int mapHeight;
+
+	public float[,] GetNoiseMap()
+    {
 		return noiseMap;
+    }
+	public void ApplyCurve(AnimationCurve curve, float heightCurveMultipler)
+    {
+        for (int x = 0; x < mapWidth; x++)
+        {
+            for (int y = 0; y < mapHeight; y++)
+            {
+				noiseMap[x, y] = curve.Evaluate(noiseMap[x, y] * heightCurveMultipler);
+
+			}
+        }
     }
 }

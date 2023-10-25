@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/* about ChunkData
+/* about Chunk
  *  defines what a chunk in the game is meant to be
  *  a chunk is meant to hold a collection of tiles
  *  in a CHUNK_SIZE x CHUNK_SIZE space. it also 
@@ -10,42 +10,63 @@ using UnityEngine;
  */
 public class Chunk
 {
-    private GameObject chunkObject;
-    private Dictionary<Vector2, Tile> chunkContents = new Dictionary<Vector2, Tile>();
-    private Vector2 postion;
-    private Bounds bounds;
+    //private ChunkData data;
+    //info for chunk
+    public GameObject chunkObject;
+    public Vector2 position;
+    public Bounds bounds;
+
+    //chunk content varibles 
+    public Dictionary<Vector2, Tile> chunkGround = new Dictionary<Vector2, Tile>();
+    public Dictionary<Vector2, Tile> chunkFloor = new Dictionary<Vector2, Tile>();
+    public Dictionary<Vector2, Tile> chunkBiulding = new Dictionary<Vector2, Tile>();
 
     //Chunk Creation
-    public Chunk(Vector2 cord, Transform parent, Sprite sprite)
+    public Chunk(Vector2 cord)
     {
+        position = cord * MapData.CHUNK_SIZE;
+        Transform parent = GameObject.Find("GameWorld").transform;
         chunkObject = new GameObject($"Chunk{cord}");
-        postion = cord * MapData.CHUNK_SIZE;
-        chunkObject.transform.SetParent(parent, false);
-        chunkObject.transform.position = postion;
-        bounds = new Bounds(postion, Vector2.one * MapData.CHUNK_SIZE);
-        chunkObject.AddComponent<SpriteRenderer>();
-        chunkObject.GetComponent<SpriteRenderer>().sprite = sprite;
+        chunkObject.transform.SetParent(parent,false);
+        chunkObject.transform.position = position;
+        bounds = new Bounds(position, Vector2.one * MapData.CHUNK_SIZE);
 
         SetVisible(false);
     }
-    //public vo
+
     public GameObject GetChunkObject()
     {
         return chunkObject;
     }
-    
+
+    public Transform GetChunkTransform()
+    {
+        return chunkObject.transform;
+    }
 
     //stuff to update things in the chunk
-    public void SetFloor(int x, int y, Tile data)
+    public void SetGround(int x, int y, Tile groundTile)
     {
-        chunkContents.Add(new Vector2(x, y), data);
+        chunkGround.Add(new Vector2(x, y), groundTile);
+    }
+    public Tile GetGround(int x, int y)
+    {
+        return chunkGround[new Vector2(x, y)];
+    }
+    public void SetFloor(int x, int y, Tile floor)
+    {
+        //todo set ground tile as inavtive if placed if remove 
+        //set to active
+        chunkFloor.Add(new Vector2(x, y), floor);
     }
     public Tile GetFloor(int x, int y)
     {        
-        return chunkContents[new Vector2(x,y)];
+        return chunkFloor[new Vector2(x,y)];
     }
 
+
     //Chunk Rendering
+    //need to look into this
     public void UpdateChunk(Vector2 veiwerPostion)
     {
         float veiwerDistance = Mathf.Sqrt(bounds.SqrDistance(veiwerPostion));

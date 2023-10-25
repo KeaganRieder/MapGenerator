@@ -22,6 +22,9 @@ public class DebuggingGameManger : MonoBehaviour
     public ChunkHandler chunkHandler;
     public Transform Player;
 
+    public float heightCurveMultipler; //todo
+    public AnimationCurve heightCurve; //todo
+
     private void Start()
     {
         mapGenerator.data = data;
@@ -30,10 +33,12 @@ public class DebuggingGameManger : MonoBehaviour
         mapGenerator.noiseScale = noiseScale;
         mapGenerator.offset = offset;
         mapGenerator.sprite = sprite;
+        mapGenerator.heightCurveMultipler = heightCurveMultipler;
+        mapGenerator.heightCurve = heightCurve;
         mapGenerator.Initalize();
         //chunkHandler = new(mapGenerator);
-        chunkHandler=mapGenerator.chunkHandler;
-        chunkHandler.sprite = sprite;
+        chunkHandler= mapGenerator.chunkHandler;
+        
        // mapGenerator.GenerateMap();
     }
 
@@ -54,12 +59,12 @@ public class DebuggingGameManger : MonoBehaviour
             mapGenerator.offset = offset;
             mapGenerator.sprite = sprite;
             mapGenerator.Initalize();
-            mapGenerator.GenerateMap();
+           // mapGenerator.GenerateMap();
            // update = false;
 
 
         }
-        Vector2 veiwerPosition = new Vector2(Player.position.x, Player.position.y);
+        Vector2 veiwerPosition = new Vector2(Player.position.x , Player.position.y);
         chunkHandler.UpdateVisableChunks(veiwerPosition);
     }
 }

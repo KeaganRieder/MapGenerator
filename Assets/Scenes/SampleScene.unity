@@ -283,19 +283,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data:
-    mapWidth: 25
-    mapHeight: 25
+    mapWidth: 100
+    mapHeight: 100
     seed: 0
     avgElevation: 0.5
     avgMoisture: 0.7
     avgTempeture: 0
     mountainBase: 0.6
     waterLevel: 0.5
-  octaves: 4
-  noiseScale: 27.6
+  octaves: 5
+  noiseScale: 10
   lacunarity: 1.87
   offset: {x: 0, y: 0}
   update: 0
   finalizeGeneration: 0
   sprite: {fileID: 7482667652216324306, guid: 971ae92ce783e7c4ab2fcd839742aa9e, type: 3}
   Player: {fileID: 775024248}
+  heightCurveMultipler: 0.5
+  heightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

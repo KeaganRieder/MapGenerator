@@ -7,20 +7,17 @@ using UnityEngine;
  * converts values form global to local
  * to allow accessing contents
  */
-public class ChunkHandler 
+public class ChunkHandler
 {
     private int visableChunks;
-    private Transform gameWorld;
     private Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
     private List<Chunk> chunksLastUpdated = new List<Chunk>();
+    private MapGenerator mapGenerator;
 
-    //temporary need to figure out better way to generate chunks
-    public Sprite sprite;
-
-    public ChunkHandler(Transform gameWorld)
+    public ChunkHandler(MapGenerator generator)
     {
-        this.gameWorld = gameWorld;
-        visableChunks = Mathf.RoundToInt(MapData.MAX_VIEW_DIST / MapData.CHUNK_SIZE);
+        visableChunks = Mathf.RoundToInt(MapData.MAX_VIEW_DIST / MapData.CHUNK_SIZE - 1);
+        this.mapGenerator = generator;
     }
     public Vector2 GetChunkCords(float globalX, float globalY)
     {
@@ -30,19 +27,28 @@ public class ChunkHandler
     }
 
     //modifing parts of the chunk
-    public void SetTile(int globalX, int globalY, Sprite sprite, Color color)
+    public void SetGround(int x, int y, Tile ground)
     {
-        Tile temp = new();
-        temp.CreateTile(globalX, globalY, chunks[GetChunkCords(globalX, globalY)].GetChunkObject().transform,sprite,color);
-        chunks[GetChunkCords(globalX, globalY)].SetFloor(globalX, globalY, temp);
+        chunks[new Vector2(x, y)].SetGround(x, y, ground);
+    }
+    public void SetGround(Vector2 chunkCords, int x, int y, Tile ground)
+    {
+        chunks[chunkCords].SetGround(x, y, ground);
+    }
+    public Tile GetGround(int x, int y)
+    {
+        return chunks[new Vector2(x, y)].GetGround(x, y);
+    }
+    public void SetFloor(int globalX, int globalY, Tile floor)
+    {
+        chunks[GetChunkCords(globalX, globalY)].SetFloor(globalX, globalY, floor);
     }
     public Tile GetFloor(int globalX, int globalY)
     {
         return chunks[GetChunkCords(globalX, globalY)].GetFloor(globalX, globalY);
     }
 
-
-    //updating chunk Visuals
+    //updating chunk Visuals and other things handling chunks
     public void UpdateVisableChunks(Vector2 veiwerPostion)
     {
         for (int i = 0; i < chunksLastUpdated.Count; i++)
@@ -53,9 +59,9 @@ public class ChunkHandler
 
         Vector2 currentChunkCords = GetChunkCords(veiwerPostion.x, veiwerPostion.y);
 
-        for (int yOffset = -visableChunks; yOffset < visableChunks; yOffset++)
+        for (int xOffset = -visableChunks; xOffset <= visableChunks; xOffset++)
         {
-            for (int xOffset = -visableChunks; xOffset < visableChunks; xOffset++)
+            for (int yOffset = -visableChunks; yOffset <= visableChunks; yOffset++)
             {
                 Vector2 veiwedChunkCord = new Vector2(currentChunkCords.x + xOffset, currentChunkCords.y + yOffset);
                 if (chunks.ContainsKey(veiwedChunkCord))
@@ -69,15 +75,27 @@ public class ChunkHandler
                 else
                 {
                     //function to generate new chunk
-                    chunks.Add(veiwedChunkCord, new Chunk(veiwedChunkCord, gameWorld, sprite));
+                    chunks.Add(veiwedChunkCord, new Chunk(veiwedChunkCord));
+
+                    CreateChunk(veiwedChunkCord);
+                    chunks[veiwedChunkCord].GetChunkTransform().position = veiwedChunkCord;
                 }
             }
         }
 
-        
+
+    }
+    public void CreateChunk(Vector2 chunkCord)
+    {
+        //make it check what point in game this is 
+        //and weather it should check if a chunks generated/
+        //saved in file and needs to just be loaded
+
+        //chunks
+        mapGenerator.GenerateChunk(chunkCord, chunks[chunkCord].GetChunkObject().transform);
+
+
     }
 
-   
+
 }
-
-

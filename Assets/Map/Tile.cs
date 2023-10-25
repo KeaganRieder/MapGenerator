@@ -13,12 +13,7 @@ public class Tile
     private GameObject tileObject;
     //todo add data object here 
 
-    public Tile()
-    {
-
-    }
-
-    public void CreateTile(int x, int y, Transform parent, Sprite sprite, Color color)
+    public Tile(int x, int y, Transform parent, Sprite sprite, Color color)
     {
         GameObject tileObject = new GameObject("tile");
         tileObject.AddComponent<SpriteRenderer>();
@@ -28,5 +23,6 @@ public class Tile
         tileObject.transform.SetParent(parent, false);
         tileObject.transform.position = new Vector3(x, y, 0);
     }
+
 }
 
