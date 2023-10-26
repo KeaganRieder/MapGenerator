@@ -24,7 +24,6 @@ public class DebuggingGameManger : MonoBehaviour
 
     public float heightCurveMultipler; //todo
     public AnimationCurve heightCurve; //todo
-
     private void Start()
     {
         mapGenerator.data = data;
@@ -38,6 +37,7 @@ public class DebuggingGameManger : MonoBehaviour
         mapGenerator.Initalize();
         //chunkHandler = new(mapGenerator);
         chunkHandler= mapGenerator.chunkHandler;
+
         
        // mapGenerator.GenerateMap();
     }

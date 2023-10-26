@@ -9,17 +9,13 @@ using UnityEngine;
  * be used in finalizing generation of a chunk or
  * map preview
  */
-public class GeneratedMapData //maybe rename to generatedMapData?
+public class GeneratedChunk //maybe rename to generatedMapData?
 {
     //nosie maps
-    public float[,] elevationMap;
-    //public AnimationCurve
 
-    public GeneratedMapData(float[,] elevationMap)
-    {
-        this.elevationMap = elevationMap;
-    }
-
+    public Dictionary<Vector2, Tile> chunkGround = new Dictionary<Vector2, Tile>();
+    public Dictionary<Vector2, Tile> chunkFloor = new Dictionary<Vector2, Tile>();
+    public Dictionary<Vector2, Tile> chunkBiulding = new Dictionary<Vector2, Tile>();
 }
 
 /* about
@@ -50,28 +46,22 @@ public class MapGenerator
         gameWorld.transform.position = new Vector3(0, 0, 0);
         chunkHandler = new ChunkHandler(this);
     }
-    public GeneratedMapData GenerateMap(Vector2 position, int width, int height)
-    {
-        PerlinNoiseMap perlinNoiseMap = new(width, height, data.seed, noiseScale, octaves, data.avgElevation, lacunarity, position + offset);
-        perlinNoiseMap.ApplyCurve(heightCurve, heightCurveMultipler);
-        float[,] elevationMap = perlinNoiseMap.GetNoiseMap();
 
-        return new GeneratedMapData(elevationMap);
-    }
     public void GeneratePreviewMap(Vector2 position)//make this for editor/act as a preview
     {
         //todo
     }
 
-    public void GenerateChunk(Vector2 position, Transform chunk)
+    public GeneratedChunk GenerateChunk(Vector2 position, Transform chunk)
     {
-        PerlinNoiseMap perlinNoiseMap = new(MapData.CHUNK_SIZE, MapData.CHUNK_SIZE, data.seed, noiseScale, octaves, data.avgElevation, lacunarity, position + offset);
+        GeneratedChunk generatedChunk = new GeneratedChunk();
+        PerlinNoiseMap perlinNoiseMap = new(MapData.CHUNK_SIZE, MapData.CHUNK_SIZE, data.seed, noiseScale, octaves, data.avgElevation, lacunarity, position+ offset, NoiseMap.NormalizationMode.Global);
         perlinNoiseMap.ApplyCurve(heightCurve, heightCurveMultipler);
         float[,] elevationMap = perlinNoiseMap.GetNoiseMap();
 
-        for (int x = 0; x < MapData.CHUNK_SIZE-1; x++)
+        for (int x = 0; x < MapData.CHUNK_SIZE; x++)
         {
-            for (int y = 0; y < MapData.CHUNK_SIZE-1; y++)
+            for (int y = 0; y < MapData.CHUNK_SIZE; y++)
             {
                 float noiseValue = elevationMap[x, y];
 
@@ -80,37 +70,13 @@ public class MapGenerator
                 int tileXCords = x + ((int)position.x);
                 int tileYCords = y + ((int)position.y);
                 Tile generatedTile = new Tile(x, y, chunk, sprite, color);
-                chunkHandler.SetGround(position, tileXCords, tileYCords, generatedTile);
-                //int tileXCords = x + ((int)position.x);
-                //int tileYCords = y + ((int)position.y);
-                //Tile generatedTile = new Tile(tileXCords, tileYCords, chunk, sprite, color);
-                //generatedChunk.ground.Add(new Vector2(tileXCords, tileYCords), generatedTile);
+
+                generatedChunk.chunkGround.Add(new Vector2(tileXCords, tileYCords),generatedTile);
+
             }
         }
+        return generatedChunk;
 
     }
    
 }
-
-/*
-   public GeneratedMapData GenerateChunkMap(Transform chunk, Vector2 position)
-   {
-       GeneratedMapData generatedChunk = new GeneratedMapData();
-       generatedChunk.ground = new Dictionary<Vector2, Tile>();
-       generatedChunk.floor = new Dictionary<Vector2, Tile>();
-       generatedChunk.biulding = new Dictionary<Vector2, Tile>();
-
-       //make this only be generated once todo
-       float[,] elevationMap = PerlinNoiseMap.Generate(MapData.CHUNK_SIZE, MapData.CHUNK_SIZE, data.seed, noiseScale, octaves, data.avgElevation, lacunarity, position+offset);
-
-       for (int x = 0; x < MapData.CHUNK_SIZE; x++)
-       {
-           for (int y = 0; y < MapData.CHUNK_SIZE; y++)
-           {
-               
-               generatedChunk.ground.Add(new Vector2(tileXCords, tileYCords), generatedTile);
-           }
-       }
-
-       return generatedChunk;
-   }*/

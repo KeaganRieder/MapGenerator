@@ -28,12 +28,26 @@ public class Chunk
         Transform parent = GameObject.Find("GameWorld").transform;
         chunkObject = new GameObject($"Chunk{cord}");
         chunkObject.transform.SetParent(parent,false);
-        chunkObject.transform.position = position;
+        
         bounds = new Bounds(position, Vector2.one * MapData.CHUNK_SIZE);
 
-        SetVisible(false);
+        SetVisible(true);
     }
 
+    
+    public void CreateChunk(Vector2 cord, MapGenerator generator)
+    {
+        //make it check what point in game this is 
+        //and weather it should check if a chunks generated/
+        //saved in file and needs to just be loaded
+
+        //chunks
+        GeneratedChunk generatedChunk = generator.GenerateChunk(cord, GetChunkTransform());
+        chunkGround = generatedChunk.chunkGround;
+        chunkObject.transform.position = position;
+
+    }
+    
     public GameObject GetChunkObject()
     {
         return chunkObject;
@@ -47,7 +61,7 @@ public class Chunk
     //stuff to update things in the chunk
     public void SetGround(int x, int y, Tile groundTile)
     {
-        chunkGround.Add(new Vector2(x, y), groundTile);
+        //chunkGround.Add(new Vector2(x, y), groundTile);
     }
     public Tile GetGround(int x, int y)
     {

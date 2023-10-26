@@ -27,13 +27,13 @@ public class ChunkHandler
     }
 
     //modifing parts of the chunk
-    public void SetGround(int x, int y, Tile ground)
+    public void SetGround(int globalX, int globalY, Tile ground)
     {
-        chunks[new Vector2(x, y)].SetGround(x, y, ground);
+       // chunks[GetChunkCords(globalX, globalY)].SetGround(globalX, globalY, ground);
     }
     public void SetGround(Vector2 chunkCords, int x, int y, Tile ground)
     {
-        chunks[chunkCords].SetGround(x, y, ground);
+      //  chunks[chunkCords].SetGround(x, y, ground);
     }
     public Tile GetGround(int x, int y)
     {
@@ -74,28 +74,13 @@ public class ChunkHandler
                 }
                 else
                 {
-                    //function to generate new chunk
                     chunks.Add(veiwedChunkCord, new Chunk(veiwedChunkCord));
-
-                    CreateChunk(veiwedChunkCord);
-                    chunks[veiwedChunkCord].GetChunkTransform().position = veiwedChunkCord;
+                    chunks[veiwedChunkCord].CreateChunk(veiwedChunkCord, mapGenerator);
                 }
             }
         }
 
 
     }
-    public void CreateChunk(Vector2 chunkCord)
-    {
-        //make it check what point in game this is 
-        //and weather it should check if a chunks generated/
-        //saved in file and needs to just be loaded
-
-        //chunks
-        mapGenerator.GenerateChunk(chunkCord, chunks[chunkCord].GetChunkObject().transform);
-
-
-    }
-
 
 }
